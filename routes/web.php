@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,10 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
+Route::view('/', 'welcome');
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::middleware('auth')->controller(HomeController::class)->group(function() {
+    Route::get('home', 'index')->name('home');
+    Route::post('upload-image', 'uploadImage')->name('upload.image');
+    Route::delete('delete-image/{image}', 'deleteImage')->name('delete.image');
+});
